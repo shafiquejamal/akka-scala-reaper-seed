@@ -1,12 +1,17 @@
 package com.example
 
-import akka.actor.ActorSystem
+import akka.actor.{Props, ActorSystem}
+import com.example.util.ReaperImpl
 
 object ApplicationMain extends App {
+
   val system = ActorSystem("MyActorSystem")
-  val pingActor = system.actorOf(PingActor.props, "pingActor")
+
+  val reaper = system.actorOf(Props[ReaperImpl], "reaper")
+  val pongActor = system.actorOf(Props(classOf[PongActor], reaper), "pongActor")
+  val pingActor = system.actorOf(Props(classOf[PingActor], reaper, pongActor), "pingActor")
+
   pingActor ! PingActor.Initialize
-  // This example app will ping pong 3 times and thereafter terminate the ActorSystem - 
-  // see counter logic in PingActor
-  system.awaitTermination()
+
+
 }

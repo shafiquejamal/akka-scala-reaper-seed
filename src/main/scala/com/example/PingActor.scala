@@ -1,12 +1,12 @@
 package com.example
 
-import akka.actor.{Actor, ActorLogging, Props}
+import akka.actor.ActorRef
+import com.example.util.WatchedActor
 
-class PingActor extends Actor with ActorLogging {
+class PingActor(reaper: ActorRef, pongActor: ActorRef) extends WatchedActor(reaper) {
   import PingActor._
   
   var counter = 0
-  val pongActor = context.actorOf(PongActor.props, "pongActor")
 
   def receive = {
   	case Initialize => 
@@ -21,7 +21,6 @@ class PingActor extends Actor with ActorLogging {
 }
 
 object PingActor {
-  val props = Props[PingActor]
   case object Initialize
   case class PingMessage(text: String)
 }

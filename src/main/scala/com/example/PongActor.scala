@@ -1,8 +1,9 @@
 package com.example
 
-import akka.actor.{Actor, ActorLogging, Props}
+import akka.actor.ActorRef
+import com.example.util.WatchedActor
 
-class PongActor extends Actor with ActorLogging {
+class PongActor(reaper: ActorRef) extends WatchedActor(reaper) {
   import PongActor._
 
   def receive = {
@@ -13,6 +14,5 @@ class PongActor extends Actor with ActorLogging {
 }
 
 object PongActor {
-  val props = Props[PongActor]
   case class PongMessage(text: String)
 }
